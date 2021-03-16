@@ -11,4 +11,8 @@ public class HelloService {
     public void setName(String name) {
         this.name = name;
     }
+
+    void sayHello(){
+        System.out.println("hello");
+    }
 }

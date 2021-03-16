@@ -4,16 +4,13 @@ package org.springframework.beans.factory;
 import java.util.HashMap;
 import java.util.Map;
 
-public class BeanFactory {
+public interface BeanFactory {
 
-    private Map<String, Object> beanMap = new HashMap<>();
-
-    public void registerBean(String name, Object bean) {
-        beanMap.put(name, bean);
-    }
-
-    public Object getBean(String name){
-        return beanMap.get(name);
-    }
+    /**
+     * 获取bean
+     * @param beanName
+     * @return
+     */
+    public Object getBean(String beanName);
 
 }
