@@ -4,10 +4,15 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanDefinition;
 
+/**
+ * 抽象工厂
+ */
 public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry implements BeanFactory {
 
     /**
      * 通过bean名获取bean
+     * 1.首先通过单例寻找bean
+     * 2.如果没找到，就从bean登记处中找出对应bean定义并以此构建一个bean
      * @param beanName
      * @return
      */
