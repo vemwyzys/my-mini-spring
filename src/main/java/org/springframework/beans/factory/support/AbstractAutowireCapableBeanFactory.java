@@ -4,6 +4,7 @@ import cn.hutool.core.bean.BeanUtil;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.PropertyValue;
 import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.beans.factory.config.BeanReference;
 
 import java.lang.reflect.Method;
 
@@ -51,6 +52,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
     /**
      * 实例化bean
+     *
      * @param beanDefinition
      * @return
      */
@@ -71,6 +73,11 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
             for (PropertyValue pv : beanDefinition.getPropertyValues().getPropertyValues()) {
                 String name = pv.getName();
                 Object value = pv.getValue();
+                if (value instanceof BeanReference) {
+                    //beanA依赖beanB，先实例化beanB
+                    BeanReference beanReference = (BeanReference) value;
+                    value = getBean(beanReference.getBeanName());
+                }
 
                 //通过属性的set方法设置属性
 //                Class<?> type = beanClass.getDeclaredField(name).getType();
