@@ -3,10 +3,10 @@ package org.springframework.beans.factory.config;
 import org.springframework.beans.PropertyValues;
 
 /**
- * BeanDefinition实例保存bean的信息,包括class类型、方法构造参数、bean属性、bean的scope等，
- * 此处简化为只包含class类型
+ * BeanDefinition实例保存bean的信息,包括class类型、方法构造参数、bean属性、bean的scope等。
  *
- * 增加持有 bean的属性信息
+ * 首先 包含class类型
+ * 增加 持有bean的属性信息
  */
 public class BeanDefinition {
 
