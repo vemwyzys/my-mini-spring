@@ -14,6 +14,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
@@ -30,12 +31,16 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
         super(registry);
     }
 
+    public XmlBeanDefinitionReader(BeanDefinitionRegistry registry, ResourceLoader resourceLoader) {
+        super(registry, resourceLoader);
+    }
+
     @Override
     public void loadBeanDefinitions(Resource resource) throws BeansException {
         try (InputStream inputStream = resource.getInputStream()) {
             doLoadBeanDefinitions(inputStream);
-        } catch (Exception ex) {
-            throw new BeansException("IOException parsing XML document from " + resource +ex.getMessage(), ex);
+        } catch (IOException ex) {
+            throw new BeansException("IOException parsing XML document from " + resource + ex.getMessage(), ex);
         }
     }
 
@@ -48,10 +53,11 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 
     /**
      * 具体实现从xml解析出bean属性列表
+     *
      * @param inputStream
      * @throws Exception
      */
-    protected void doLoadBeanDefinitions(InputStream inputStream) throws Exception {
+    protected void doLoadBeanDefinitions(InputStream inputStream) throws IOException {
         Document document = XmlUtil.readXML(inputStream);
         Element root = document.getDocumentElement();
         NodeList childNodes = root.getChildNodes();
@@ -64,13 +70,22 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
                     String name = bean.getAttribute(NAME_ATTRIBUTE);
                     String className = bean.getAttribute(CLASS_ATTRIBUTE);
 
-                    Class<?> clazz = Class.forName(className);
-
+                    Class<?> clazz = null;
+                    try {
+                        clazz = Class.forName(className);
+                    } catch (ClassNotFoundException ex) {
+                        throw new BeansException("Cannot find class [" + className + "]");
+                    }
                     //id优先于name
                     String beanName = StrUtil.isNotEmpty(id) ? id : name;
                     if (StrUtil.isEmpty(beanName)) {
                         //如果id和name都为空，将类名的第一个字母转为小写后作为bean的名称
                         beanName = StrUtil.lowerFirst(clazz.getSimpleName());
+                    }
+
+                    if (getRegistry().containsBeanDefinition(beanName)) {
+                        //beanName不能重名
+                        throw new BeansException("Duplicate beanName[" + beanName + "] is not allowed");
                     }
 
                     BeanDefinition beanDefinition = new BeanDefinition(clazz);
@@ -84,6 +99,10 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
                                 String nameAttribute = property.getAttribute(NAME_ATTRIBUTE);
                                 String valueAttribute = property.getAttribute(VALUE_ATTRIBUTE);
                                 String refAttribute = property.getAttribute(REF_ATTRIBUTE);
+
+                                if (StrUtil.isEmpty(nameAttribute)) {
+                                    throw new BeansException("The name attribute cannot be null or empty");
+                                }
 
                                 Object value = valueAttribute;
                                 if (StrUtil.isNotEmpty(refAttribute)) {

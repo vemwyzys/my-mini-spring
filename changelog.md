@@ -39,3 +39,10 @@
 |BeanDefinitionReader|接口，解析BeanDefinition的接口。通过loadBeanDefinitions(String)来从一个地址加载bean定义|
 |AbstractBeanDefinitionReader|实现上面接口的抽象类。并为实现如何读取bean定义，但规范了此接口的基本结构：持有beanRegistry(用于将解析到的属性放到登记处)；内置一个resourceLoader，用于将获取到的资源地址适配到合适的获取inputStream的实现|
 |XmlBeanDefinitionReader|具体实现了loadBeanDefinitions()方法，从xml文件中读取类定义|
+
+## 七、调整bean工厂
+|类名|说明|
+|:---|:---|
+|ListableBeanFactory|接口，定义返回所有指定class类型的实例|
+|ConfigurableListableBeanFactory|接口，继承上面一个接口，增加定义根据名称查找beanDefinition&提前实例化所有单例实例|
+### 具体工厂实现类 实现上面接口
