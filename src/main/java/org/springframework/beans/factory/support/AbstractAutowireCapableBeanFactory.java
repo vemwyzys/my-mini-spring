@@ -107,6 +107,13 @@ public abstract class AbstractAutowireCapableBeanFactory
         }
     }
 
+    /**
+     * 初始化bean
+     * @param beanName
+     * @param bean
+     * @param beanDefinition
+     * @return
+     */
     protected Object initializeBean(String beanName, Object bean, BeanDefinition beanDefinition) {
         //执行BeanPostProcessor的前置处理
         Object wrappedBean = applyBeanPostProcessorsBeforeInitialization(bean, beanName);
@@ -163,9 +170,11 @@ public abstract class AbstractAutowireCapableBeanFactory
      */
     protected void invokeInitMethods(String beanName, Object bean, BeanDefinition beanDefinition) throws Throwable {
         System.out.println("执行bean[" + beanName + "]的初始化方法");
+        //如果bean本身实现了初始化bean接口,则直接调用方法
         if (bean instanceof InitializingBean) {
             ((InitializingBean) bean).afterPropertiesSet();
         }
+        //如果发现有配置出来的初始化方法,则调用此方法
         String initMethodName = beanDefinition.getInitMethodName();
         if (StrUtil.isNotEmpty(initMethodName)) {
             Method initMethod = ClassUtil.getPublicMethod(beanDefinition.getBeanClass(), initMethodName);
@@ -185,13 +194,14 @@ public abstract class AbstractAutowireCapableBeanFactory
     }
 
     /**
-     * 注册有销毁方法的bean，即bean继承自DisposableBean或有自定义的销毁方法
+     * 注册有销毁方法的bean
      *
      * @param beanName
      * @param bean
      * @param beanDefinition
      */
     protected void registerDisposableBeanIfNecessary(String beanName, Object bean, BeanDefinition beanDefinition) {
+        //bean继承自DisposableBean 或 有自定义的销毁方法
         if (bean instanceof DisposableBean || StrUtil.isNotEmpty(beanDefinition.getDestroyMethodName())) {
             registerDisposableBean(beanName, new DisposableBeanAdapter(bean, beanName, beanDefinition));
         }

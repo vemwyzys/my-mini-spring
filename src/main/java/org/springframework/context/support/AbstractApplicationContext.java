@@ -12,7 +12,9 @@ import java.util.Map;
 /**
  * 抽象应用上下文
  */
-public abstract class AbstractApplicationContext extends DefaultResourceLoader implements ConfigurableApplicationContext {
+public abstract class AbstractApplicationContext
+        extends DefaultResourceLoader
+        implements ConfigurableApplicationContext {
 
     @Override
     public void refresh() throws BeansException {
