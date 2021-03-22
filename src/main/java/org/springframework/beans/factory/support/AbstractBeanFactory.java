@@ -38,6 +38,11 @@ public abstract class AbstractBeanFactory
         return createBean(beanName, beanDefinition);
     }
 
+    @Override
+    public <T> T getBean(String name, Class<T> requiredType) throws BeansException {
+        return (T) getBean(name);
+    }
+
     /**
      * 用bean名和bean定义创建bean
      *

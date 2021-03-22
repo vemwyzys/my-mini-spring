@@ -7,6 +7,7 @@ public interface AutowireCapableBeanFactory extends BeanFactory {
 
     /**
      * 执行BeanPostProcessors的postProcessBeforeInitialization方法
+     * 初始化bean的前置处理
      *
      * @param existingBEan
      * @param beanName
@@ -18,6 +19,7 @@ public interface AutowireCapableBeanFactory extends BeanFactory {
 
     /**
      * 执行BeanPostProcessors的postProcessAfterInitialization方法
+     * 初始化bean的后置处理
      *
      * @param existingBEan
      * @param beanName

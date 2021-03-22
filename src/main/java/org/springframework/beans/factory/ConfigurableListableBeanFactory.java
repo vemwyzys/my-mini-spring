@@ -1,9 +1,13 @@
 package org.springframework.beans.factory;
 
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.beans.factory.config.BeanPostProcessor;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 
-public interface ConfigurableListableBeanFactory extends ListableBeanFactory {
+public interface ConfigurableListableBeanFactory
+        extends ListableBeanFactory, AutowireCapableBeanFactory, ConfigurableBeanFactory {
 
     /**
      * 根据名称查找BeanDefinition
@@ -20,4 +24,11 @@ public interface ConfigurableListableBeanFactory extends ListableBeanFactory {
      * @throws BeansException
      */
     void preInstantiateSingletons() throws BeansException;
+
+    /**
+     * 添加bean后置处理器
+     *
+     * @param beanPostProcessor
+     */
+    void addBeanPostProcessor(BeanPostProcessor beanPostProcessor);
 }
