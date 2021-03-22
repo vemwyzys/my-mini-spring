@@ -20,7 +20,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader i
         refreshBeanFactory();
         ConfigurableListableBeanFactory beanFactory = getBeanFactory();
 
-        //在bean实例化之前,执行BeanFactoryPostProcessor
+        //在bean实例化之前,执行BeanFactoryPostProcessor,以修改beanDefinition
         invokeBeanFactoryPostProcessors(beanFactory);
 
         //BeanPostProcessor需要在其他bean实例化之前注册
@@ -40,10 +40,16 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader i
 
     public abstract ConfigurableListableBeanFactory getBeanFactory();
 
-
+    /**
+     * 执行BeanFactoryPostProcessor
+     *
+     * @param beanFactory
+     */
     protected void invokeBeanFactoryPostProcessors(ConfigurableListableBeanFactory beanFactory) {
+        //获取工厂里已经注册了的所有beanFactoryPostProcessor
         Map<String, BeanFactoryPostProcessor> beanFactoryPostProcessorMap = beanFactory.getBeansOfType(BeanFactoryPostProcessor.class);
         for (BeanFactoryPostProcessor beanFactoryPostProcessor : beanFactoryPostProcessorMap.values()) {
+            //执行所有beanFactoryPostProcessor,以替换beanDefinition里面的属性
             beanFactoryPostProcessor.postProcessBeanFactory(beanFactory);
         }
     }
@@ -78,4 +84,22 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader i
         return getBeanFactory().getBeanDefinitionNames();
     }
 
+    @Override
+    public void close() {
+        doClose();
+    }
+
+    protected void doClose() {
+        destroyBeans();
+    }
+
+    protected void destroyBeans() {
+        getBeanFactory().destroySingletons();
+    }
+
+    @Override
+    public void registerShutdownHook() {
+        Thread shutdownHook = new Thread(this::doClose);
+        Runtime.getRuntime().addShutdownHook(shutdownHook);
+    }
 }

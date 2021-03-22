@@ -7,12 +7,18 @@ import org.springframework.beans.PropertyValues;
  *
  * 首先 包含class类型
  * 增加 持有bean的属性信息
+ * 增加 初始化方法名
+ * 增加 销毁方法名
  */
 public class BeanDefinition {
 
     private Class<?> beanClass;
 
     private PropertyValues propertyValues;
+
+    private String initMethodName;
+
+    private String destroyMethodName;
 
     public BeanDefinition(Class<?> beanClass) {
         this(beanClass, null);
@@ -37,5 +43,21 @@ public class BeanDefinition {
 
     public void setPropertyValues(PropertyValues propertyValues) {
         this.propertyValues = propertyValues;
+    }
+
+    public String getInitMethodName() {
+        return initMethodName;
+    }
+
+    public void setInitMethodName(String initMethodName) {
+        this.initMethodName = initMethodName;
+    }
+
+    public String getDestroyMethodName() {
+        return destroyMethodName;
+    }
+
+    public void setDestroyMethodName(String destroyMethodName) {
+        this.destroyMethodName = destroyMethodName;
     }
 }
