@@ -61,7 +61,10 @@ public abstract class AbstractAutowireCapableBeanFactory
         //注册有销毁方法的bean
         registerDisposableBeanIfNecessary(beanName, bean, beanDefinition);
 
-        addSingleton(beanName, bean);
+        //如果bean定义是单例,则加入单例集合
+        if (beanDefinition.isSingleton()) {
+            addSingleton(beanName, bean);
+        }
         return bean;
     }
 
@@ -213,9 +216,12 @@ public abstract class AbstractAutowireCapableBeanFactory
      * @param beanDefinition
      */
     protected void registerDisposableBeanIfNecessary(String beanName, Object bean, BeanDefinition beanDefinition) {
-        //bean继承自DisposableBean 或 有自定义的销毁方法
-        if (bean instanceof DisposableBean || StrUtil.isNotEmpty(beanDefinition.getDestroyMethodName())) {
-            registerDisposableBean(beanName, new DisposableBeanAdapter(bean, beanName, beanDefinition));
+        //只有singleton类型的bean会执行销毁方法
+        if (beanDefinition.isSingleton()) {
+            //bean继承自DisposableBean 或 有自定义的销毁方法
+            if (bean instanceof DisposableBean || StrUtil.isNotEmpty(beanDefinition.getDestroyMethodName())) {
+                registerDisposableBean(beanName, new DisposableBeanAdapter(bean, beanName, beanDefinition));
+            }
         }
     }
 }

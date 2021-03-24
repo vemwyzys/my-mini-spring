@@ -15,6 +15,9 @@ public class ClassPathXmlApplicationContext extends AbstractXmlApplicationContex
      * @param configLocation xml配置文件
      * @throws BeansException 应用上下文创建失败
      */
+    public ClassPathXmlApplicationContext(String configLocation) throws BeansException {
+        this(new String[]{configLocation});
+    }
 
     /**
      * 从xml文件加载BeanDefinition，并且自动刷新上下文
