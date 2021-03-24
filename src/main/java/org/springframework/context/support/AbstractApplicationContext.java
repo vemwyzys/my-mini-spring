@@ -16,12 +16,24 @@ public abstract class AbstractApplicationContext
         extends DefaultResourceLoader
         implements ConfigurableApplicationContext {
 
+    /**
+     * 上下文刷新:
+     * 创建工厂,加载bean定义列表
+     * 加载bean前置处理器列表
+     * 执行BeanFactoryPostProcessor,以修改beanDefinition
+     * 加载所有bean的后置处理器
+     * @throws BeansException
+     */
     @Override
     public void refresh() throws BeansException {
         //创建BeanFactory,并加载BeanDefinition
         refreshBeanFactory();
         ConfigurableListableBeanFactory beanFactory = getBeanFactory();
 
+        //感知bean
+        ///这里手动添加一个BeanPostProcessor(ApplicationContextAwareProcessor)
+        ///让继承ApplicationContextAware的bean能感知bean
+        beanFactory.addBeanPostProcessor(new ApplicationContextProcessor(this));
         //在bean实例化之前,执行BeanFactoryPostProcessor,以修改beanDefinition
         invokeBeanFactoryPostProcessors(beanFactory);
 

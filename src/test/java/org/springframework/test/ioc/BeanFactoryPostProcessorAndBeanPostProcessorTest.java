@@ -35,7 +35,7 @@ public class BeanFactoryPostProcessorAndBeanPostProcessorTest {
         XmlBeanDefinitionReader definitionReader = new XmlBeanDefinitionReader(beanFactory);
         definitionReader.loadBeanDefinitions("classpath:spring.xml");
 
-        //添加bean实例化后的处理器
+        //手动添加bean实例化后的处理器
         CustomerBeanPostProcessor beanPostProcessor = new CustomerBeanPostProcessor();
         beanFactory.addBeanPostProcessor(beanPostProcessor);
 

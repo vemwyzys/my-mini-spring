@@ -1,6 +1,16 @@
 package org.springframework.test.ioc.service;
 
-public class HelloService {
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.BeanFactoryAware;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+
+public class HelloService implements ApplicationContextAware, BeanFactoryAware {
+
+    public ApplicationContext applicationContext;
+
+    public BeanFactory beanFactory;
 
     private String foo;
 
@@ -24,5 +34,15 @@ public class HelloService {
 
     public void sayHello() {
         System.out.println(foo + " " + bar);
+    }
+
+    @Override
+    public void setBeanFactoryAware(BeanFactory beanFactory) throws BeansException {
+        this.beanFactory = beanFactory;
+    }
+
+    @Override
+    public void setApplicationContextAware(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
     }
 }
