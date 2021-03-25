@@ -37,7 +37,7 @@ public class HelloService implements ApplicationContextAware, BeanFactoryAware {
     }
 
     @Override
-    public void setBeanFactoryAware(BeanFactory beanFactory) throws BeansException {
+    public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
         this.beanFactory = beanFactory;
     }
 

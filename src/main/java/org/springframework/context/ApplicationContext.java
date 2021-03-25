@@ -10,5 +10,6 @@ import org.springframework.beans.factory.ListableBeanFactory;
 public interface ApplicationContext
         extends ListableBeanFactory,
         HierarchicalBeanFactory,
-        ResourceLoader {
+        ResourceLoader,
+        ApplicationEventPublisher {
 }

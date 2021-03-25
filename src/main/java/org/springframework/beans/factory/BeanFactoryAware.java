@@ -7,6 +7,6 @@ import org.springframework.beans.BeansException;
  */
 public interface BeanFactoryAware extends Aware {
 
-    void setBeanFactoryAware(BeanFactory beanFactory) throws BeansException;
+    void setBeanFactory(BeanFactory beanFactory) throws BeansException;
 
 }

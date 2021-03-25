@@ -124,7 +124,7 @@ public abstract class AbstractAutowireCapableBeanFactory
         //工厂初始化bean之前,检测是否需要感知
         if (bean instanceof BeanFactoryAware) {
             //需要感知则让其持有工厂
-            ((BeanFactoryAware) bean).setBeanFactoryAware(this);
+            ((BeanFactoryAware) bean).setBeanFactory(this);
         }
 
         //执行BeanPostProcessor的前置处理
