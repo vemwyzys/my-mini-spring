@@ -108,3 +108,15 @@ FactoryBean是一种特殊的bean，当向容器获取该bean时，容器不是�
 ApplicationContext容器提供了完善的事件发布和事件监听功能。
 
 ApplicationEventMulticaster接口是注册监听器和发布事件的抽象接口，AbstractApplicationContext包含其实现类实例作为其属性，使得ApplicationContext容器具有注册监听器和发布事件的能力。在AbstractApplicationContext#refresh方法中，会实例化ApplicationEventMulticaster、注册监听器并发布容器刷新事件ContextRefreshedEvent；在AbstractApplicationContext#doClose方法中，发布容器关闭事件ContextClosedEvent。
+
+## 十五.切点表达式
+JoinPoint，织入点，指需要执行代理操作的某个类的某个方法(仅支持方法级别的JoinPoint)；
+Pointcut是JoinPoint的表述方式，能捕获JoinPoint。
+
+最常用的切点表达式是AspectJ的切点表达式。
+需要匹配类，定义ClassFilter接口；
+匹配方法，定义MethodMatcher接口。
+PointCut需要同时匹配类和方法，包含ClassFilter和MethodMatcher,
+AspectJExpressionPointcut是支持AspectJ切点表达式的PointCut实现，简单实现,仅支持execution函数。
+
+## 十六.
