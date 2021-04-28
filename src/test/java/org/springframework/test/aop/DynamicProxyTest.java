@@ -2,9 +2,7 @@ package org.springframework.test.aop;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.aop.AdvisedSupport;
-import org.springframework.aop.MethodMatcher;
-import org.springframework.aop.TargetSource;
+import org.springframework.aop.*;
 import org.springframework.aop.aspectj.AspectJExpressionPointcut;
 import org.springframework.aop.framework.CglibAopProxy;
 import org.springframework.aop.framework.JdkDynamicAopProxy;
@@ -54,6 +52,17 @@ public class DynamicProxyTest {
         // 使用CGLIB动态代理
         advisedSupport.setProxyTargetClass(true);
         proxy = (WorldService) new ProxyFactory(advisedSupport).getProxy();
+        proxy.explode();
+    }
+
+    @Test
+    public void testBeforeAdvice() throws Exception {
+        //设置BeforeAdvice
+        WorldServiceBeforeAdvice beforeAdvice = new WorldServiceBeforeAdvice();
+        MethodBeforeAdviceInterceptor methodInterceptor = new MethodBeforeAdviceInterceptor(beforeAdvice);
+        advisedSupport.setMethodInterceptor(methodInterceptor);
+
+        WorldService proxy = (WorldService) new ProxyFactory(advisedSupport).getProxy();
         proxy.explode();
     }
 

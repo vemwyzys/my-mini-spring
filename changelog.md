@@ -139,3 +139,11 @@ TargetSource，被代理对象的封装。MethodInterceptor，方法拦截器，
 
 ## 十八. AOP代理工厂
 增加AOP代理工厂ProxyFactory，由AdvisedSupport#proxyTargetClass属性决定使用JDK动态代理还是CGLIB动态代理。
+
+## 十九. 几种常用的Advice：BeforeAdvice/AfterAdvice/AfterReturningAdvice/ThrowsAdvice...
+Spring将AOP联盟中的Advice细化出各种类型的Advice，
+常用的有BeforeAdvice/AfterAdvice/AfterReturningAdvice/ThrowsAdvice，
+我们可以通过扩展MethodInterceptor来实现。
+
+只简单实现BeforeAdvice，有兴趣的同学可以帮忙实现另外几种Advice。
+定义MethodBeforeAdviceInterceptor拦截器，在执行被代理方法之前，先执行BeforeAdvice的方法。
