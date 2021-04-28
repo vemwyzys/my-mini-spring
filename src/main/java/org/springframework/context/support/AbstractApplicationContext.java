@@ -24,6 +24,9 @@ public abstract class AbstractApplicationContext
 
     public static final String APPLICATION_EVENT_MULTICASTER_BEAN_NAME = "applicationEventMulticaster";
 
+    /**
+     * 事件发布者
+     */
     private ApplicationEventMulticaster applicationEventMulticaster;
 
     /**
@@ -42,8 +45,7 @@ public abstract class AbstractApplicationContext
         ConfigurableListableBeanFactory beanFactory = getBeanFactory();
 
         //感知bean
-        ///这里手动添加一个BeanPostProcessor(ApplicationContextAwareProcessor)
-        ///让继承ApplicationContextAware的bean能感知bean
+        ///这里手动添加一个BeanPostProcessor(ApplicationContextAwareProcessor)->让继承ApplicationContextAware的bean能感知bean
         beanFactory.addBeanPostProcessor(new ApplicationContextProcessor(this));
         //在bean实例化之前,执行BeanFactoryPostProcessor,以修改beanDefinition
         invokeBeanFactoryPostProcessors(beanFactory);
@@ -110,6 +112,7 @@ public abstract class AbstractApplicationContext
      * 注册事件监听器
      */
     protected void registerListeners() {
+        //将所有ApplicationListener的实现类注册到事件发布者(applicationEventMulticaster)
         Collection<ApplicationListener> applicationListeners = getBeansOfType(ApplicationListener.class).values();
         for (ApplicationListener applicationListener : applicationListeners) {
             applicationEventMulticaster.addApplicationListener(applicationListener);

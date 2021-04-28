@@ -107,7 +107,16 @@ FactoryBean是一种特殊的bean，当向容器获取该bean时，容器不是�
 ## 十四.容器事件和事件监听器
 ApplicationContext容器提供了完善的事件发布和事件监听功能。
 
-ApplicationEventMulticaster接口是注册监听器和发布事件的抽象接口，AbstractApplicationContext包含其实现类实例作为其属性，使得ApplicationContext容器具有注册监听器和发布事件的能力。在AbstractApplicationContext#refresh方法中，会实例化ApplicationEventMulticaster、注册监听器并发布容器刷新事件ContextRefreshedEvent；在AbstractApplicationContext#doClose方法中，发布容器关闭事件ContextClosedEvent。
+|动作|类名|说明|
+|:---|:---|:---|
+|+|ApplicationEvent|应用事件类|
+|+|自定义各个继承ApplicationEvent的事件类||
+|+|ApplicationListener<E extends ApplicationEvent> extends EventListener|接口,订阅ApplicationEvent类的事件|
+|+|自定义各个接收上面各个事件类的订阅类(实现ApplicationListener)||
+
+ApplicationEventMulticaster接口是注册监听器和发布事件的抽象接口，AbstractApplicationContext包含其实现类实例作为其属性，使得ApplicationContext容器具有注册监听器和发布事件的能力(委托其完成发布事件)。
+在AbstractApplicationContext#refresh方法中，会实例化ApplicationEventMulticaster、注册监听器并发布容器刷新事件ContextRefreshedEvent；
+在AbstractApplicationContext#doClose方法中，发布容器关闭事件ContextClosedEvent。
 
 ## 十五.切点表达式
 JoinPoint，织入点，指需要执行代理操作的某个类的某个方法(仅支持方法级别的JoinPoint)；
@@ -119,4 +128,14 @@ Pointcut是JoinPoint的表述方式，能捕获JoinPoint。
 PointCut需要同时匹配类和方法，包含ClassFilter和MethodMatcher,
 AspectJExpressionPointcut是支持AspectJ切点表达式的PointCut实现，简单实现,仅支持execution函数。
 
-## 十六.
+## 十六.基于JDK的动态代理
+AopProxy是获取代理对象的抽象接口，JdkDynamicAopProxy的基于JDK动态代理的具体实现。
+TargetSource，被代理对象的封装。MethodInterceptor，方法拦截器，是AOP Alliance的"公民"，顾名思义，可以拦截方法，可在被代理执行的方法前后增加代理行为。
+
+## 十七.基于CGLIB的动态代理
+基于CGLIB的动态代理实现逻辑也比较简单，查看CglibAopProxy。
+与基于JDK的动态代理在运行期间为接口生成对象的代理对象不同，
+基于CGLIB的动态代理能在运行期间动态构建字节码的class文件，为类生成子类，因此被代理类不需要继承自任何接口。
+
+## 十八. AOP代理工厂
+增加AOP代理工厂ProxyFactory，由AdvisedSupport#proxyTargetClass属性决定使用JDK动态代理还是CGLIB动态代理。

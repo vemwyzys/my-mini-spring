@@ -31,9 +31,9 @@ public class SimpleApplicationEventMulticaster extends AbstractApplicationEventM
      * @return
      */
     protected boolean supportsEvent(ApplicationListener<ApplicationEvent> applicationListener, ApplicationEvent event) {
-        //获取实现的第一个接口
+        //获取实现的第一个接口(即获取实现的)
         Type type = applicationListener.getClass().getGenericInterfaces()[0];
-        //获取此接口的第一个参数的类文件
+        //获取此接口的第一个参数的类文件(获取其准确的泛型类型,即具体哪个Event)
         Type actualTypeArgument = ((ParameterizedType) type).getActualTypeArguments()[0];
         String className = actualTypeArgument.getTypeName();
         Class<?> eventClassName;
@@ -42,7 +42,7 @@ public class SimpleApplicationEventMulticaster extends AbstractApplicationEventM
         } catch (ClassNotFoundException e) {
             throw new BeansException("wrong event class name: " + className);
         }
-        //返回此类文件是否继承自Application
+        //返回此event是否继承或实现了订阅者接收的event
         return eventClassName.isAssignableFrom(event.getClass());
     }
 }
