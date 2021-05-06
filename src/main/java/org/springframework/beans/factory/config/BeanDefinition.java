@@ -84,4 +84,19 @@ public class BeanDefinition {
     public void setDestroyMethodName(String destroyMethodName) {
         this.destroyMethodName = destroyMethodName;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        BeanDefinition that = (BeanDefinition) o;
+
+        return beanClass.equals(that.beanClass);
+    }
+
+    @Override
+    public int hashCode() {
+        return beanClass.hashCode();
+    }
 }
