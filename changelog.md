@@ -147,3 +147,21 @@ Spring将AOP联盟中的Advice细化出各种类型的Advice，
 
 只简单实现BeforeAdvice，有兴趣的同学可以帮忙实现另外几种Advice。
 定义MethodBeforeAdviceInterceptor拦截器，在执行被代理方法之前，先执行BeforeAdvice的方法。
+
+## 二十. PointcutAdvisor：Pointcut和Advice的组合
+Advisor是包含一个Pointcut和一个Advice的组合，Pointcut用于捕获JoinPoint，Advice决定在JoinPoint执行某种操作。
+实现了一个支持aspectj表达式的AspectJExpressionPointcutAdvisor。
+
+## 二十一. 动态代理融入bean生命周期
+结合前面讲解的bean的生命周期，BeanPostProcessor处理阶段可以修改和替换bean，正好可以在此阶段返回代理对象替换原对象。
+不过我们引入一种特殊的BeanPostProcessor——InstantiationAwareBeanPostProcessor，
+如果InstantiationAwareBeanPostProcessor处理阶段返回代理对象，会导致短路，不会继续走原来的创建bean的流程，
+具体实现查看AbstractAutowireCapableBeanFactory#resolveBeforeInstantiation。
+
+DefaultAdvisorAutoProxyCreator是处理横切逻辑的织入返回代理对象的InstantiationAwareBeanPostProcessor实现类，当对象实例化时，生成代理对象并返回。
+
+## 二十二. 属性占位符 PropertyPlaceholderConfigurer
+经常需要将配置信息配置在properties文件中，然后在XML文件中以占位符的方式引用。
+
+实现思路很简单，在bean实例化之前，编辑BeanDefinition，解析XML文件中的占位符，然后用properties文件中的配置值替换占位符。
+而BeanFactoryPostProcessor具有编辑BeanDefinition的能力，因此PropertyPlaceholderConfigurer继承自BeanFactoryPostProcessor。

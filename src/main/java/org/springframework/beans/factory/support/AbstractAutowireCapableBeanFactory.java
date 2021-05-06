@@ -8,10 +8,7 @@ import org.springframework.beans.PropertyValue;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
-import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.beans.factory.config.BeanPostProcessor;
-import org.springframework.beans.factory.config.BeanReference;
+import org.springframework.beans.factory.config.*;
 
 import java.lang.reflect.Method;
 
@@ -35,6 +32,11 @@ public abstract class AbstractAutowireCapableBeanFactory
      */
     @Override
     protected Object createBean(String beanName, BeanDefinition beanDefinition) throws BeansException {
+        //如果bean需要代理，则直接返回代理对象(方法内也会进行bean后置处理)
+        Object bean = resolveBeforeInstantiation(beanName, beanDefinition);
+        if (bean != null) {
+            return bean;
+        }
         return doCreateBean(beanName, beanDefinition);
     }
 
@@ -143,6 +145,13 @@ public abstract class AbstractAutowireCapableBeanFactory
     }
 
 
+    /**
+     * 应用 bean前置处理器
+     * @param existingBean
+     * @param beanName
+     * @return
+     * @throws BeansException
+     */
     @Override
     public Object applyBeanPostProcessorsBeforeInitialization(Object existingBean, String beanName)
             throws BeansException {
@@ -159,6 +168,13 @@ public abstract class AbstractAutowireCapableBeanFactory
         return result;
     }
 
+    /**
+     * 应用 bean后置处理器
+     * @param existingBean
+     * @param beanName
+     * @return
+     * @throws BeansException
+     */
     @Override
     public Object applyBeanPostProcessorsAfterInitialization(Object existingBean, String beanName)
             throws BeansException {
@@ -223,5 +239,32 @@ public abstract class AbstractAutowireCapableBeanFactory
                 registerDisposableBean(beanName, new DisposableBeanAdapter(bean, beanName, beanDefinition));
             }
         }
+    }
+
+    /**
+     * 执行InstantiationAwareBeanPostProcessor的方法，如果bean需要代理，直接返回代理对象
+     *
+     * @param beanName
+     * @param beanDefinition
+     * @return
+     */
+    protected Object resolveBeforeInstantiation(String beanName, BeanDefinition beanDefinition) {
+        Object bean = applyBeanPostProcessorsBeforeInstantiation(beanDefinition.getBeanClass(), beanName);
+        if (bean != null) {
+            bean = applyBeanPostProcessorsAfterInitialization(bean, beanName);
+        }
+        return bean;
+    }
+
+    protected Object applyBeanPostProcessorsBeforeInstantiation(Class beanClass, String beanName) {
+        for (BeanPostProcessor beanPostProcessor : getBeanPostProcessors()) {
+            if (beanPostProcessor instanceof InstantiationAwareBeanPostProcessor) {
+                Object result = ((InstantiationAwareBeanPostProcessor) beanPostProcessor).postProcessBeforeInstantiation(beanClass, beanName);
+                if (result != null) {
+                    return result;
+                }
+            }
+        }
+        return null;
     }
 }
